@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".ui.AuthorizationFragment">
+
+
+    <EditText
+        android:id="@+id/name_auth_editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="14"
+        android:layout_margin="8dp"
+        android:layout_gravity="center"
+        android:inputType="textPersonName"
+        android:hint="Your login" />
+
+    <EditText
+        android:id="@+id/password_auth_editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:ems="14"
+        android:layout_gravity="center"
+        android:inputType="textPassword"
+        android:hint="Your password"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="8dp"
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/authorization_btn"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Authorization" />
+
+        <Button
+            android:id="@+id/go_registration_btn"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registration" />
+    </LinearLayout>
+
+</LinearLayout>
