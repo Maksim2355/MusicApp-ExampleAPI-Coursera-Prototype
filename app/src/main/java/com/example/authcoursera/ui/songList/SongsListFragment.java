@@ -22,23 +22,37 @@ import java.io.IOException;
 import java.util.List;
 
 public class SongsListFragment extends Fragment {
+    private static final String DATA_TAG = "album";
+    private RecyclerView mSongListRecycler;
+    private AlbumAndSongs mAlbumAndSongs;
+    private TextView mNameAlbumTextView;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
+        mAlbumAndSongs = (AlbumAndSongs) getArguments().getSerializable(DATA_TAG);
         return inflater.inflate(R.layout.fragment_songs_list, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        mSongListRecycler = view.findViewById(R.id.songs_list_recyclerView);
+        mNameAlbumTextView = view.findViewById(R.id.albumName_textView);
+        System.out.println(mAlbumAndSongs.getName());
+        mNameAlbumTextView.setText(mAlbumAndSongs.getName());
     }
 
 
 
-
+    public static Fragment getInstanceWithArguments(AlbumAndSongs data){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DATA_TAG, data);
+        Fragment instance = new SongsListFragment();
+        instance.setArguments(bundle);
+        return instance;
+    }
 
 }

@@ -9,11 +9,30 @@ import java.util.List;
 
 public class AlbumAndSongs implements Serializable {
 
-    @Embedded
-    private Album album;
+    private int id;
+
+    @ColumnInfo(name = "name")
+    private String mName;
+
 
     @Relation(parentColumn = "id", entityColumn = "album_id")
     private List<Song> songs;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String mName) {
+        this.mName = mName;
+    }
 
     public List<Song> getSongs() {
         return songs;
@@ -23,14 +42,6 @@ public class AlbumAndSongs implements Serializable {
         this.songs = songs;
     }
 
-
-    public Album getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(Album album) {
-        this.album = album;
-    }
 
 
 }

@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.authcoursera.ApiUtils;
+import com.example.authcoursera.ControlActionBar;
 import com.example.authcoursera.FragmentManagement;
 import com.example.authcoursera.R;
 import com.example.authcoursera.model.User;
@@ -51,6 +52,8 @@ public class AuthorizationFragment extends Fragment implements View.OnClickListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ControlActionBar controlActionBar = (ControlActionBar)getActivity();
+        controlActionBar.deleteActionBar();
         return inflater.inflate(R.layout.fragment_authorization, container, false);
     }
 
@@ -101,7 +104,9 @@ public class AuthorizationFragment extends Fragment implements View.OnClickListe
                         App.getInstance().getDatabase().getUserDao().loginInAccount(userForDb);
                         fragmentManagement.replaceFragment(new AlbumsListFragment());
                         },
-                        throwable -> showToastMessage(throwable.getMessage()));
+                        throwable -> {
+                            showToastMessage(throwable.getMessage());
+                        });
     }
 
 

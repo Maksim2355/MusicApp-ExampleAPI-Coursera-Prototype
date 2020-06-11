@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.authcoursera.R;
 import com.example.authcoursera.model.Album;
 import com.example.authcoursera.ui.AdapterDataManagement;
+import com.example.authcoursera.ui.ClickViewHolder;
 
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.List;
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumViewHolder> implements AdapterDataManagement<Album> {
 
     private List<Album> albumList = new ArrayList<>();
+    private ClickViewHolder<Album> clickViewHolder;
 
 
 
@@ -33,7 +35,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumViewHolder> implemen
 
     @Override
     public void onBindViewHolder(@NonNull AlbumViewHolder holder, int position) {
-        holder.bind(albumList.get(position));
+        holder.bind(albumList.get(position), clickViewHolder);
     }
 
 
@@ -49,7 +51,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumViewHolder> implemen
     }
 
     @Override
-    public void setData(List<Album> dataList) {
+    public void setData(List<Album> dataList, ClickViewHolder<Album> clickViewHolder) {
+        this.clickViewHolder = clickViewHolder;
         albumList = dataList;
         notifyDataSetChanged();
     }

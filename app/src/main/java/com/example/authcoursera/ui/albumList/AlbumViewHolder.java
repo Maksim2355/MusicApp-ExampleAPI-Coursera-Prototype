@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.authcoursera.R;
 import com.example.authcoursera.model.Album;
+import com.example.authcoursera.ui.ClickViewHolder;
 
 
 public class AlbumViewHolder extends RecyclerView.ViewHolder {
 
     private TextView mNameAlbumTextView;
     private TextView mReleaseAlbumDateTextView;
+
 
 
     public AlbumViewHolder(@NonNull View itemView) {
@@ -24,7 +26,10 @@ public class AlbumViewHolder extends RecyclerView.ViewHolder {
 
 
 
-    public void bind(Album item) {
+    public void bind(Album item, ClickViewHolder<Album> click) {
+        itemView.setOnClickListener(v -> {
+            click.clickViewHolder(item);
+        });
         mNameAlbumTextView.setText(item.getName());
         mReleaseAlbumDateTextView.setText(item.getReleaseDate());
     }

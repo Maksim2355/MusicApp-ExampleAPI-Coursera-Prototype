@@ -2,19 +2,18 @@ package com.example.authcoursera.ui.albumList;
 
 import android.annotation.SuppressLint;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -25,30 +24,34 @@ import com.example.authcoursera.ControlActionBar;
 import com.example.authcoursera.FragmentManagement;
 import com.example.authcoursera.R;
 import com.example.authcoursera.model.Album;
+import com.example.authcoursera.model.AlbumAndSongs;
 import com.example.authcoursera.model.MusicDao;
+import com.example.authcoursera.model.Song;
 import com.example.authcoursera.system.App;
 import com.example.authcoursera.ui.AdapterDataManagement;
-import com.example.authcoursera.ui.AuthorizationFragment;
+import com.example.authcoursera.ui.ClickViewHolder;
+import com.example.authcoursera.ui.songList.SongsListFragment;
 
 
-import java.util.Objects;
-
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class AlbumsListFragment extends Fragment {
+public class AlbumsListFragment extends Fragment implements ClickViewHolder<Album> {
 
     private RecyclerView mAlbumListRecyclerView;
     private AdapterDataManagement<Album> albumAdapterManagement;
     private Toolbar toolbar;
     private FragmentManagement fragmentManagement;
+    private ClickViewHolder<Album> clickViewHolder;
 
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        clickViewHolder = (ClickViewHolder<Album>)this;
         return inflater.inflate(R.layout.fragment_album_list, container, false);
     }
 
@@ -67,7 +70,6 @@ public class AlbumsListFragment extends Fragment {
         ControlActionBar controlActionBar = (ControlActionBar)getActivity();
         controlActionBar.setActionBar(toolbar);
 
-
         fragmentManagement = (FragmentManagement) getActivity();
         loadDataAlbumsForAdapter();
     }
@@ -80,14 +82,13 @@ public class AlbumsListFragment extends Fragment {
                     getMusicDao().addAlbums(albums);
                 } )
                 .onErrorReturn(throwable -> {
-                    System.out.println("Пизда " + getMusicDao().getAlbums());
                     if (ApiUtils.NETWORK_EXCEPTION.contains(throwable.getClass())){
                         return getMusicDao().getAlbums();
                     }else return null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(albums -> {
-                    albumAdapterManagement.setData(albums);
+                    albumAdapterManagement.setData(albums, clickViewHolder);
                 }, throwable -> {
                     Toast.makeText(getActivity(), "Ошибка при загрузке " +
                             throwable.getMessage(), Toast.LENGTH_LONG).show();
@@ -103,7 +104,48 @@ public class AlbumsListFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ControlActionBar controlActionBar = (ControlActionBar)getActivity();
-        controlActionBar.deleteActionBar();
+    }
+
+
+    /*
+       После клика, получаем альбом с сервера. Возвращается элемент AlbumAndSongs.
+       List<Song> из него добавляем в нашу БД
+       В Случае ошибки при неисправности интернета, достаем albumsWithSongs из нашей бд
+     */
+
+    @SuppressLint("CheckResult")
+    @Override
+    public void clickViewHolder(Album data) {
+        ApiUtils.getApiService().getAlbumById(data.getId())
+                .subscribeOn(Schedulers.io())
+                .doOnSuccess(albumAndSongs -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ) setInfoAlbum(albumAndSongs);
+                    else {
+                        for (Song song:albumAndSongs.getSongs()){
+                            song.setIdAlbum(albumAndSongs.getId());
+                        }
+                    }
+                    getMusicDao().addSongs(albumAndSongs.getSongs());
+                })
+                .onErrorReturn(throwable -> {
+                    if (ApiUtils.NETWORK_EXCEPTION.contains(throwable.getClass())){
+                        return getMusicDao().getAlbumsWithSongs(data.getId());
+                    }else return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(albumAndSongs -> {
+                    System.out.println(albumAndSongs.getName());
+                    fragmentManagement.
+                            replaceFragment(SongsListFragment.getInstanceWithArguments(albumAndSongs));
+                }, throwable -> {
+                    Toast.makeText(getActivity(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+                });
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void setInfoAlbum(AlbumAndSongs albumAndSongs) {
+        int albumId = albumAndSongs.getId();
+        albumAndSongs.getSongs().forEach(song -> {song.setIdAlbum(albumId);});
     }
 }

@@ -6,7 +6,7 @@ public interface AdapterDataManagement<T> {
 
     void addData(T data);
 
-    void setData(List<T> dataList);
+    void setData(List<T> dataList, ClickViewHolder<T> clickViewHolder);
 
     void updateData(T data, int position);
 

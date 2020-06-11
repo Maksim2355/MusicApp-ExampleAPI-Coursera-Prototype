@@ -36,7 +36,18 @@ public interface MusicDao {
     @Query("DELETE FROM ALBUM WHERE ID = :albumId")
     void deleteAlbum(int albumId);
 
-    @Query("SELECT * FROM ALBUM WHERE id = :id")
-    Single<AlbumAndSongs> getAlbumsAndSongs(int id);
+
+    @Query("SELECT id, name FROM ALBUM WHERE id = :id")
+    AlbumAndSongs getAlbumsWithSongs(int id);
+
+    @Insert
+    void addSongs(List<Song> songs);
+
+    @Query("SELECT * FROM Song")
+    List<Song> getSongs();
+
+    @Query("SELECT * FROM SONG WHERE id = :id")
+    Song getSong(int id);
+
 
 }
