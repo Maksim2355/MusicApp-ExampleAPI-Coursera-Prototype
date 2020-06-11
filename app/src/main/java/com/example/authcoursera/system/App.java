@@ -7,24 +7,27 @@ import androidx.room.Room;
 import com.example.authcoursera.model.DbLocal;
 
 public class App extends Application {
-    private static App instance;
 
-    private DbLocal dbLocal;
+    public static App instance;
+
+    private DbLocal database;
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
-        dbLocal = Room.databaseBuilder(this, DbLocal.class, "database")
-                                        .build();
+        database = Room.databaseBuilder(this, DbLocal.class, "database")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .build();
     }
 
-    public static App getInstance(){
+    public static App getInstance() {
         return instance;
     }
 
-    public DbLocal getDatabase(){
-        return dbLocal;
+    public DbLocal getDatabase() {
+        return database;
     }
 
 }

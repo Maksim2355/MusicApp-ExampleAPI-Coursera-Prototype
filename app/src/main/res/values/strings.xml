@@ -8,4 +8,8 @@
     <string name="password_enter">Введите пароль</string>
     <string name="name">Ваш никнейм</string>
     <string name="email">Ваш email</string>
+    <string name="loginInput_hint_authFragment">Your login</string>
+    <string name="passwordInput_hint_authFragment">Your password</string>
+    <string name="auth_btn_authFragment">Authorization</string>
+    <string name="reg_btn_authFragment">Registration</string>
 </resources>

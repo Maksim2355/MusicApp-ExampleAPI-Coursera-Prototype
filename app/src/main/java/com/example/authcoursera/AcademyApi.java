@@ -14,7 +14,6 @@ import io.reactivex.Single;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 
 public interface AcademyApi {
@@ -26,9 +25,10 @@ public interface AcademyApi {
     Single<User> getUserInfo();
 
     @GET("albums")
-    Single<List<Album>> getAlbum();
+    Single<List<Album>> getAlbumsList();
 
-    @GET("albums/{id}")
-    Single<AlbumAndSongs> getSongsFromAlbums(@Path("id") int id);
+
+
+
 
 }

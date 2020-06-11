@@ -8,6 +8,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,6 +20,9 @@ import android.widget.Toast;
 import com.example.authcoursera.ApiUtils;
 import com.example.authcoursera.FragmentManagement;
 import com.example.authcoursera.R;
+import com.example.authcoursera.model.User;
+import com.example.authcoursera.model.UserDao;
+import com.example.authcoursera.system.App;
 import com.example.authcoursera.ui.albumList.AlbumsListFragment;
 import com.google.gson.JsonObject;
 
@@ -45,7 +51,6 @@ public class AuthorizationFragment extends Fragment implements View.OnClickListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_authorization, container, false);
     }
 
@@ -70,31 +75,39 @@ public class AuthorizationFragment extends Fragment implements View.OnClickListe
                 authorizationUser();
                 break;
             }case R.id.go_registration_btn: {
-                Fragment fragmentDestination = new RegistrationFragment();
-                fragmentManagement.replaceFragment(fragmentDestination);
+                goRegistrationUser();
                 break;
             }
 
         }
     }
 
+    private void goRegistrationUser() {
+        Fragment fragmentDestination = new RegistrationFragment();
+        fragmentManagement.replaceFragment(fragmentDestination);
+    }
+
     @SuppressLint("CheckResult")
     private void authorizationUser() {
-        String userEmail = mInputLoginEditText.getText().toString();
-        String userPassword = mInputPasswordEditText.getText().toString();
-        ApiUtils.getNewApiService(userEmail, userPassword)
+        String email = mInputLoginEditText.getText().toString();
+        String password = mInputPasswordEditText.getText().toString();
+        ApiUtils.getNewApiService(email, password)
                 .getUserInfo()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(user ->{
-                            showToastMessage("Привет " + user.getName());
-                            fragmentManagement.replaceFragment(new AlbumsListFragment());
+                        User userForDb = new User(user.getEmail(), user.getName(), password);
+                        showToastMessage("Привет " + user.getName());
+                        App.getInstance().getDatabase().getUserDao().loginInAccount(userForDb);
+                        fragmentManagement.replaceFragment(new AlbumsListFragment());
                         },
-                        throwable -> showToastMessage("Ошибка авторизации"));
+                        throwable -> showToastMessage(throwable.getMessage()));
     }
 
 
     private void showToastMessage(String message){
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
+
+
 }

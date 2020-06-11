@@ -10,17 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.authcoursera.R;
 import com.example.authcoursera.model.Album;
+import com.example.authcoursera.ui.AdapterDataManagement;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class AlbumAdapter extends RecyclerView.Adapter<AlbumViewHolder> {
+public class AlbumAdapter extends RecyclerView.Adapter<AlbumViewHolder> implements AdapterDataManagement<Album> {
 
-    private List<Album> albumList;
+    private List<Album> albumList = new ArrayList<>();
 
-    public AlbumAdapter(List<Album> albumList){
-        this.albumList = albumList;
-    }
+
 
     @NonNull
     @Override
@@ -41,4 +41,24 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumViewHolder> {
     public int getItemCount() {
         return albumList.size();
     }
+
+    @Override
+    public void addData(Album data) {
+        albumList.add(data);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void setData(List<Album> dataList) {
+        albumList = dataList;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void updateData(Album data, int position) {
+        albumList.set(position, data);
+        notifyDataSetChanged();
+    }
+
+
 }

@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 @Entity
 public class Song implements Serializable {
+
     @PrimaryKey
     @SerializedName("id")
     @ColumnInfo(name = "id")
