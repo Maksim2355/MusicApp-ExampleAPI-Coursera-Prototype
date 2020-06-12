@@ -28,17 +28,6 @@ public class Album implements Serializable {
     @ColumnInfo(name = "release_date")
     private String mReleaseDate;
 
-    public List<Song> getSongList() {
-        return songList;
-    }
-
-    public void setSongList(List<Song> songList) {
-        this.songList = songList;
-    }
-
-    @Ignore
-    @SerializedName("songs")
-    private List<Song> songList;
 
 
     public int getId() {

@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.authcoursera.ApiUtils;
 import com.example.authcoursera.ControlActionBar;
 import com.example.authcoursera.FragmentManagement;
+import com.example.authcoursera.InternetAccessControl;
 import com.example.authcoursera.R;
 import com.example.authcoursera.model.Album;
 import com.example.authcoursera.model.AlbumAndSongs;
@@ -33,7 +34,6 @@ import com.example.authcoursera.ui.ClickViewHolder;
 import com.example.authcoursera.ui.songList.SongsListFragment;
 
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -45,6 +45,7 @@ public class AlbumsListFragment extends Fragment implements ClickViewHolder<Albu
     private Toolbar toolbar;
     private FragmentManagement fragmentManagement;
     private ClickViewHolder<Album> clickViewHolder;
+    private InternetAccessControl internetAccessControl;
 
 
 
@@ -67,12 +68,21 @@ public class AlbumsListFragment extends Fragment implements ClickViewHolder<Albu
         mAlbumListRecyclerView.setAdapter(albumAdapter);
 
         toolbar = view.findViewById(R.id.toolbar);
+
         ControlActionBar controlActionBar = (ControlActionBar)getActivity();
         controlActionBar.setActionBar(toolbar);
-
         fragmentManagement = (FragmentManagement) getActivity();
-        loadDataAlbumsForAdapter();
+        internetAccessControl = (InternetAccessControl)getActivity();
+
+        if (internetAccessControl.getAccessInfo()){
+            loadDataAlbumsForAdapter();
+        }
+        else {
+            internetAccessControl.sendPermissionRequest();
+        }
     }
+
+
 
     @SuppressLint("CheckResult")
     private void loadDataAlbumsForAdapter() {
@@ -88,7 +98,10 @@ public class AlbumsListFragment extends Fragment implements ClickViewHolder<Albu
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(albums -> {
-                    albumAdapterManagement.setData(albums, clickViewHolder);
+                    if (albums != null){
+                        albumAdapterManagement.setData(albums, clickViewHolder);
+                    }else   Toast.makeText(getActivity(), "Нету данных ",
+                            Toast.LENGTH_LONG).show();
                 }, throwable -> {
                     Toast.makeText(getActivity(), "Ошибка при загрузке " +
                             throwable.getMessage(), Toast.LENGTH_LONG).show();
@@ -98,12 +111,6 @@ public class AlbumsListFragment extends Fragment implements ClickViewHolder<Albu
 
     private MusicDao getMusicDao(){
         return App.getInstance().getDatabase().getMusicDao();
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
 
@@ -119,10 +126,12 @@ public class AlbumsListFragment extends Fragment implements ClickViewHolder<Albu
         ApiUtils.getApiService().getAlbumById(data.getId())
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess(albumAndSongs -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ) setInfoAlbum(albumAndSongs);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N )
+                        setInfoAlbum(albumAndSongs);
                     else {
                         for (Song song:albumAndSongs.getSongs()){
                             song.setIdAlbum(albumAndSongs.getId());
+                            System.out.println(song.getId());
                         }
                     }
                     getMusicDao().addSongs(albumAndSongs.getSongs());
@@ -134,7 +143,6 @@ public class AlbumsListFragment extends Fragment implements ClickViewHolder<Albu
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(albumAndSongs -> {
-                    System.out.println(albumAndSongs.getName());
                     fragmentManagement.
                             replaceFragment(SongsListFragment.getInstanceWithArguments(albumAndSongs));
                 }, throwable -> {

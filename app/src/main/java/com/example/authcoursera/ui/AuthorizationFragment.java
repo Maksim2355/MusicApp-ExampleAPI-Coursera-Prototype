@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.authcoursera.ApiUtils;
 import com.example.authcoursera.ControlActionBar;
 import com.example.authcoursera.FragmentManagement;
+import com.example.authcoursera.InternetAccessControl;
 import com.example.authcoursera.R;
 import com.example.authcoursera.model.User;
 import com.example.authcoursera.model.UserDao;
@@ -43,6 +44,7 @@ public class AuthorizationFragment extends Fragment implements View.OnClickListe
     private Button mRegistrationBtn;
 
     private FragmentManagement fragmentManagement;
+    private InternetAccessControl internetAccessControl;
 
     public AuthorizationFragment() {
         // Required empty public constructor
@@ -66,6 +68,7 @@ public class AuthorizationFragment extends Fragment implements View.OnClickListe
         mRegistrationBtn = view.findViewById(R.id.go_registration_btn);
         //Интерфейс для управление фрагментами из активности
         fragmentManagement = (FragmentManagement) getActivity();
+        internetAccessControl = (InternetAccessControl)getActivity();
 
         mAuthorizationBtn.setOnClickListener(this);
         mRegistrationBtn.setOnClickListener(this);
@@ -94,6 +97,7 @@ public class AuthorizationFragment extends Fragment implements View.OnClickListe
     private void authorizationUser() {
         String email = mInputLoginEditText.getText().toString();
         String password = mInputPasswordEditText.getText().toString();
+        if (internetAccessControl.getAccessInfo())
         ApiUtils.getNewApiService(email, password)
                 .getUserInfo()
                 .subscribeOn(Schedulers.io())
@@ -107,6 +111,7 @@ public class AuthorizationFragment extends Fragment implements View.OnClickListe
                         throwable -> {
                             showToastMessage(throwable.getMessage());
                         });
+        else showToastMessage("Отсутствует подключение к интернету");
     }
 
 

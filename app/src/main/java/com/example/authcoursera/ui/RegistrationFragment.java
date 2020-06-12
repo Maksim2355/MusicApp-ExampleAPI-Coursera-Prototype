@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.authcoursera.ApiUtils;
 import com.example.authcoursera.FragmentManagement;
+import com.example.authcoursera.InternetAccessControl;
 import com.example.authcoursera.R;
 import com.example.authcoursera.model.User;
 
@@ -40,6 +41,8 @@ public class RegistrationFragment extends Fragment {
     private Button mBackAuthBtn;
 
     private FragmentManagement fragmentManagement;
+    private InternetAccessControl internetAccessControl;
+
 
     public RegistrationFragment() {
         // Required empty public constructor
@@ -62,19 +65,24 @@ public class RegistrationFragment extends Fragment {
         mRegistrationUserBtn = view.findViewById(R.id.registration_btn);
         mBackAuthBtn = view.findViewById(R.id.back_auth_btn);
         fragmentManagement = (FragmentManagement)getActivity();
+        internetAccessControl = (InternetAccessControl)getActivity();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mRegistrationUserBtn.setOnClickListener(v -> registrationUser());
-        mBackAuthBtn.setOnClickListener(v ->
-                fragmentManagement.replaceFragment(new AuthorizationFragment()));
+        mBackAuthBtn.setOnClickListener(v -> {
+            if (internetAccessControl.getAccessInfo()){
+                fragmentManagement.replaceFragment(new AuthorizationFragment());
+            }else showToastMessage("Интернета нет");
+        });
     }
 
 
     @SuppressLint("CheckResult")
     private void registrationUser(){
+
         String email = mEmailInputEditText.getText().toString();
         String name = mNameInputEditText.getText().toString();
         //Я же не пидорас,чтобы в пуле строк хранить пароли

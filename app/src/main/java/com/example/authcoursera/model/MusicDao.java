@@ -10,8 +10,6 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import io.reactivex.Single;
-
 @Dao
 public interface MusicDao {
 
@@ -40,7 +38,7 @@ public interface MusicDao {
     @Query("SELECT id, name FROM ALBUM WHERE id = :id")
     AlbumAndSongs getAlbumsWithSongs(int id);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addSongs(List<Song> songs);
 
     @Query("SELECT * FROM Song")
