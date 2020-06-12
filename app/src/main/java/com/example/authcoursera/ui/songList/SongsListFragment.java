@@ -56,7 +56,6 @@ public class SongsListFragment extends Fragment {
         mGoCommentsBtn.setOnClickListener(v -> {
             goComments();
         });
-
         mSongListRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         mSongListRecycler.setAdapter(new SongsAdapter(mAlbumAndSongs.getSongs()));
         mNameAlbumTextView.setText(mAlbumAndSongs.getName());

@@ -1,7 +1,7 @@
 package com.example.authcoursera.model;
 
 import androidx.room.ColumnInfo;
-import androidx.room.Ignore;
+import androidx.room.Embedded;
 import androidx.room.Relation;
 
 import com.google.gson.annotations.SerializedName;
@@ -11,22 +11,19 @@ import java.util.List;
 
 public class AlbumAndSongs implements Serializable {
 
-    @SerializedName("id")
+
+
     @ColumnInfo(name = "id")
+    @SerializedName("id")
     private int mId;
 
-    @SerializedName("name")
     @ColumnInfo(name = "name")
+    @SerializedName("name")
     private String mName;
 
-
-    @Ignore
-    @Relation(parentColumn = "id", entityColumn = "album_id")
+    @Relation(parentColumn = "id", entity = Song.class, entityColumn = "album_id")
+    @SerializedName("songs")
     private List<Song> songs;
-
-
-
-
 
     public int getId() {
         return mId;
@@ -43,6 +40,9 @@ public class AlbumAndSongs implements Serializable {
     public void setName(String mName) {
         this.mName = mName;
     }
+
+
+
 
     public List<Song> getSongs() {
         return songs;

@@ -3,7 +3,9 @@ package com.example.authcoursera;
 
 import com.example.authcoursera.model.Album;
 import com.example.authcoursera.model.AlbumAndSongs;
+import com.example.authcoursera.model.Comment;
 import com.example.authcoursera.model.User;
+import com.example.authcoursera.model.UserCommentForSending;
 import com.google.gson.JsonObject;
 
 
@@ -32,6 +34,11 @@ public interface AcademyApi {
     @GET("albums/{id}")
     Single<AlbumAndSongs> getAlbumById(@Path("id") int id);
 
+    @GET("album/{id}/comments")
+    Single<List<Comment>> getCommentsByAlbum(@Path("id") int id);
+
+    @POST("comments")
+    Completable postComment(@Body UserCommentForSending comment);
 
 
 

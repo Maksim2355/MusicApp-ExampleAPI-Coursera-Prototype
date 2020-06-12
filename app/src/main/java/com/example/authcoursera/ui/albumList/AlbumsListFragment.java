@@ -120,6 +120,7 @@ public class AlbumsListFragment extends Fragment implements ClickViewHolder<Albu
        В Случае ошибки при неисправности интернета, достаем albumsWithSongs из нашей бд
      */
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("CheckResult")
     @Override
     public void clickViewHolder(Album data) {
@@ -131,7 +132,6 @@ public class AlbumsListFragment extends Fragment implements ClickViewHolder<Albu
                     else {
                         for (Song song:albumAndSongs.getSongs()){
                             song.setIdAlbum(albumAndSongs.getId());
-                            System.out.println(song.getId());
                         }
                     }
                     getMusicDao().addSongs(albumAndSongs.getSongs());

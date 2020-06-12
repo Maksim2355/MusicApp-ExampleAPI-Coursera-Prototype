@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public interface MusicDao {
     void deleteAlbum(int albumId);
 
 
+    @Transaction
     @Query("SELECT id, name FROM ALBUM WHERE id = :id")
     AlbumAndSongs getAlbumsWithSongs(int id);
 
@@ -48,4 +50,12 @@ public interface MusicDao {
     Song getSong(int id);
 
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addComments(List<Comment> comment);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addComment(Comment comment);
+
+    @Query("SELECT * FROM COMMENT")
+    List<Comment> getComments();
 }
