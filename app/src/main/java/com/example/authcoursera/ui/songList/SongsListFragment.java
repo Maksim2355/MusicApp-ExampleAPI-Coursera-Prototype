@@ -18,10 +18,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.authcoursera.ControlActionBar;
+import com.example.authcoursera.FragmentManagement;
 import com.example.authcoursera.R;
 import com.example.authcoursera.model.Album;
 import com.example.authcoursera.model.AlbumAndSongs;
 import com.example.authcoursera.model.Song;
+import com.example.authcoursera.ui.commentList.CommentsListFragment;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,6 +35,7 @@ public class SongsListFragment extends Fragment {
     private TextView mNameAlbumTextView;
     private Button mGoCommentsBtn;
 
+    private FragmentManagement fragmentManagement;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,6 +52,7 @@ public class SongsListFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ControlActionBar controlActionBar = (ControlActionBar)getActivity();
         controlActionBar.setActionBar(toolbar);
+        fragmentManagement = (FragmentManagement)getActivity();
 
         mSongListRecycler = view.findViewById(R.id.songs_list_recyclerView);
         mNameAlbumTextView = view.findViewById(R.id.albumAndSongsList_textView);
@@ -62,7 +66,7 @@ public class SongsListFragment extends Fragment {
     }
 
     private void goComments() {
-
+        fragmentManagement.replaceFragment(CommentsListFragment.newInstance(mAlbumAndSongs.getId()));
     }
 
 

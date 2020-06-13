@@ -58,4 +58,7 @@ public interface MusicDao {
 
     @Query("SELECT * FROM COMMENT")
     List<Comment> getComments();
+
+    @Query("SELECT * FROM COMMENT WHERE ALBUM_ID = :albumId")
+    List<Comment> getCommentsByAlbum(int albumId);
 }
