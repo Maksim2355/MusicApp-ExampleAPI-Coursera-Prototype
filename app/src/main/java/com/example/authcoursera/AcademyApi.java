@@ -10,8 +10,10 @@ import com.google.gson.JsonObject;
 
 
 import java.util.List;
+import java.util.Observable;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -34,7 +36,7 @@ public interface AcademyApi {
     @GET("albums/{id}")
     Single<AlbumAndSongs> getAlbumById(@Path("id") int id);
 
-    @GET("album/{id}/comments")
+    @GET("albums/{id}/comments")
     Single<List<Comment>> getCommentsByAlbum(@Path("id") int id);
 
     @POST("comments")

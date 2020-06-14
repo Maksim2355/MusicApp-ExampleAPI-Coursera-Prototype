@@ -8,11 +8,11 @@ import java.io.Serializable;
 
 public class UserCommentForSending implements Serializable {
 
-    public String getAlbumId() {
+    public int getAlbumId() {
         return mAlbumId;
     }
 
-    public void setAlbumId(String mAlbumId) {
+    public void setAlbumId(int mAlbumId) {
         this.mAlbumId = mAlbumId;
     }
 
@@ -24,8 +24,13 @@ public class UserCommentForSending implements Serializable {
         this.mTextComment = mTextComment;
     }
 
+    public UserCommentForSending(int albumId, String textComment){
+        this.mAlbumId = albumId;
+        this.mTextComment = textComment;
+    }
+
     @SerializedName("album_id")
-    private String mAlbumId;
+    private int mAlbumId;
 
     @SerializedName("text")
     private String mTextComment;
